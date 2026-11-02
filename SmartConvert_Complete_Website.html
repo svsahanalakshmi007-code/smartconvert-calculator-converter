@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SmartConvert | Calculator & Converter</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap');
+:root{--blue:#5268e8;--blue2:#eef0ff;--ink:#202b45;--muted:#7d879b;--line:#e8ebf2;--bg:#f6f7fb}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:'DM Sans',sans-serif}
+header{height:70px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 max(5%,calc((100% - 1120px)/2))}
+.logo{font:800 20px Manrope,sans-serif}.logo b{color:var(--blue)}.status{font-size:11px;color:#77839a;letter-spacing:1px}
+main{max-width:1040px;margin:0 auto;padding:48px 22px 60px}
+.hero{text-align:center;margin-bottom:32px}.tag{font-size:10px;letter-spacing:2px;font-weight:700;color:var(--blue)}
+h1{font:800 clamp(30px,5vw,43px) Manrope,sans-serif;letter-spacing:-1.5px;margin:10px 0}
+.hero p{color:var(--muted);font-size:14px;margin:0}
+.layout{display:grid;grid-template-columns:220px 1fr;gap:20px;align-items:start}
+.sidebar,.workarea{background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 12px 32px #1d2c5010}
+.sidebar{padding:13px}.side-title{font-size:10px;color:#a0a8b8;font-weight:700;letter-spacing:1.5px;padding:12px 10px}
+.nav{width:100%;border:0;background:transparent;text-align:left;padding:13px 12px;border-radius:9px;font:600 13px 'DM Sans';color:#68748a;cursor:pointer;margin:2px 0}
+.nav span{display:inline-block;width:26px;font-size:16px}.nav.active{background:var(--blue2);color:var(--blue)}
+.tip{margin:18px 5px 5px;background:#f7f8fc;padding:13px;border-radius:10px;font-size:11px;color:#7d879b;line-height:1.6}
+.workarea{padding:27px;min-height:490px}.panel{display:none}.panel.active{display:block}
+.panel-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
+.panel-head h2{font:700 21px Manrope;margin:0 0 5px}.panel-head p{margin:0;color:var(--muted);font-size:12px}
+.number{font-size:10px;color:#9aa3b3;background:#f5f6fa;padding:7px 10px;border-radius:20px}
+label{display:block;font-size:12px;font-weight:700;color:#56627a;margin:0 0 8px}
+input,select{width:100%;height:47px;border:1px solid #dfe4ee;border-radius:9px;background:#fff;padding:0 13px;font:14px 'DM Sans';color:var(--ink);outline:none}
+input:focus,select:focus{border-color:var(--blue);box-shadow:0 0 0 3px #5268e81a}
+.field{margin-bottom:18px}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.ops{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin:5px 0 20px}
+.op{height:44px;border:1px solid var(--line);border-radius:9px;background:#f9faff;color:#596681;font-size:19px;cursor:pointer}
+.op.active{background:var(--blue2);border-color:#cdd4ff;color:var(--blue)}
+.primary{width:100%;height:48px;border:0;border-radius:9px;background:var(--blue);color:white;font:700 13px 'DM Sans';cursor:pointer}
+.primary:hover{background:#4057d6}
+.result{margin-top:20px;background:#f5f6ff;border:1px solid #e7eaff;border-radius:11px;padding:17px 18px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.result small{font-size:10px;letter-spacing:1.4px;color:#8b95aa;font-weight:700}.result strong{font:800 22px Manrope;color:var(--blue);text-align:right;overflow-wrap:anywhere}
+.error{font-size:12px;color:#cf4444;min-height:16px;margin:10px 0 0}
+.note{font-size:11px;line-height:1.6;color:#939caf;margin:13px 0 0}
+.swap{display:block;margin:-4px auto 17px;border:0;background:transparent;color:var(--blue);font-weight:700;font-size:12px;cursor:pointer}
+.history{margin-top:22px;border-top:1px solid var(--line);padding-top:17px}.history h3{font-size:12px;margin:0 0 10px}.history-list{font-size:11px;color:var(--muted);line-height:1.9}
+footer{text-align:center;color:#9aa3b3;font-size:11px;padding:22px}
+@media(max-width:700px){main{padding:30px 14px}.layout{grid-template-columns:1fr}.sidebar{display:flex;gap:4px;overflow:auto;padding:8px}.side-title,.tip{display:none}.nav{white-space:nowrap;width:auto;flex:1;padding:12px 9px;font-size:11px}.nav span{width:auto;margin-right:5px}.workarea{padding:20px}.status{font-size:9px}}
+@media(max-width:420px){.grid2{grid-template-columns:1fr;gap:0}.panel-head h2{font-size:18px}.result strong{font-size:18px}}
+</style>
+</head>
+<body>
+<header><div class="logo">✦ Smart<b>Convert</b></div><div class="status">CALCULATOR &nbsp;·&nbsp; UNIT &nbsp;·&nbsp; CURRENCY</div></header>
+<main>
+<section class="hero"><div class="tag">YOUR EVERYDAY SMART TOOL</div><h1>Calculate. Convert. Simplify.</h1><p>A simple workspace for everyday calculations and conversions.</p></section>
+<div class="layout">
+<aside class="sidebar">
+<div class="side-title">TOOLS</div>
+<button class="nav active" data-open="calc"><span>▦</span> Calculator</button>
+<button class="nav" data-open="unit"><span>⇄</span> Unit converter</button>
+<button class="nav" data-open="money"><span>◎</span> Currency converter</button>
+<div class="tip">Choose a tool to get started. Enter your values and press the convert button to see your result.</div>
+</aside>
+<section class="workarea">
+<div class="panel active" id="calc">
+<div class="panel-head"><div><h2>Basic calculator</h2><p>Perform basic arithmetic operations.</p></div><span class="number">01 / 03</span></div>
+<div class="grid2">
+<div class="field"><label for="a">First number</label><input id="a" type="number" step="any" placeholder="Enter first number"></div>
+<div class="field"><label for="b">Second number</label><input id="b" type="number" step="any" placeholder="Enter second number"></div>
+</div>
+<label>Choose operation</label><div class="ops">
+<button class="op active" data-op="+">+</button><button class="op" data-op="-">−</button><button class="op" data-op="*">×</button><button class="op" data-op="/">÷</button>
+</div>
+<button class="primary" id="doCalc">Calculate result&nbsp; →</button>
+<div class="result"><small>YOUR RESULT</small><strong id="calcOut">—</strong></div><p class="error" id="calcErr"></p>
+</div>
+<div class="panel" id="unit">
+<div class="panel-head"><div><h2>Unit converter</h2><p>Convert distance and temperature values.</p></div><span class="number">02 / 03</span></div>
+<div class="field"><label for="unitKind">Conversion type</label><select id="unitKind"><option value="km">Kilometers → Miles</option><option value="c">Celsius → Fahrenheit</option></select></div>
+<div class="field"><label for="unitInput">Enter value</label><input id="unitInput" type="number" step="any" placeholder="Type a number"></div>
+<button class="primary" id="doUnit">Convert unit&nbsp; →</button>
+<div class="result"><small>CONVERTED VALUE</small><strong id="unitOut">—</strong></div><p class="error" id="unitErr"></p>
+</div>
+<div class="panel" id="money">
+<div class="panel-head"><div><h2>Currency converter</h2><p>Convert between the supported currencies.</p></div><span class="number">03 / 03</span></div>
+<div class="field"><label for="amount">Amount</label><input id="amount" type="number" min="0" step="any" placeholder="Enter amount"></div>
+<div class="grid2">
+<div class="field"><label for="from">From currency</label><select id="from"><option>INR</option><option>USD</option><option>EUR</option><option>GBP</option></select></div>
+<div class="field"><label for="to">To currency</label><select id="to"><option>USD</option><option>INR</option><option>EUR</option><option>GBP</option></select></div>
+</div>
+<button class="swap" id="swap">⇄ Swap currencies</button>
+<button class="primary" id="doMoney">Convert currency&nbsp; →</button>
+<div class="result"><small>CONVERTED AMOUNT</small><strong id="moneyOut">—</strong></div><p class="error" id="moneyErr"></p>
+<p class="note">Note: Sample exchange rates are used for this learning project (1 USD = ₹83, 1 EUR = ₹90, 1 GBP = ₹105). These are not live rates and must not be used for actual financial transactions.</p>
+</div>
+<div class="history"><h3>How it works</h3><div class="history-list">Select a tool · Enter valid values · Click the action button · View your result</div></div>
+</section>
+</div>
+</main>
+<footer>SmartConvert · Interactive Calculator & Unit Converter · Learning project</footer>
+<script>
+let operation='+';
+document.querySelectorAll('.nav').forEach(btn=>btn.addEventListener('click',()=>{
+ document.querySelectorAll('.nav').forEach(x=>x.classList.remove('active'));
+ document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
+ btn.classList.add('active');document.getElementById(btn.dataset.open).classList.add('active');
+}));
+document.querySelectorAll('.op').forEach(btn=>btn.addEventListener('click',()=>{
+ document.querySelectorAll('.op').forEach(x=>x.classList.remove('active'));
+ btn.classList.add('active');operation=btn.dataset.op;
+}));
+const val=id=>document.getElementById(id).value.trim();
+const err=(id,msg)=>document.getElementById(id).textContent=msg;
+document.getElementById('doCalc').addEventListener('click',()=>{
+ const x=val('a'),y=val('b');err('calcErr','');
+ if(x===''||y===''){err('calcErr','Please enter both numbers.');return}
+ const n=Number(x),m=Number(y);
+ if(!Number.isFinite(n)||!Number.isFinite(m)){err('calcErr','Please enter valid numbers.');return}
+ if(operation==='/'&&m===0){err('calcErr','Division by zero is not allowed.');return}
+ let r=operation==='+'?n+m:operation==='-'?n-m:operation==='*'?n*m:n/m;
+ document.getElementById('calcOut').textContent=String(Number(r.toFixed(8)));
+});
+document.getElementById('doUnit').addEventListener('click',()=>{
+ const raw=val('unitInput');err('unitErr','');
+ if(raw===''||!Number.isFinite(Number(raw))){err('unitErr','Please enter a valid number.');return}
+ const n=Number(raw),kind=val('unitKind');
+ document.getElementById('unitOut').textContent=kind==='km'?(n*.621371).toFixed(4)+' miles':((n*9/5)+32).toFixed(2)+' °F';
+});
+const rates={INR:1,USD:83,EUR:90,GBP:105};
+document.getElementById('doMoney').addEventListener('click',()=>{
+ const raw=val('amount'),n=Number(raw),f=val('from'),t=val('to');err('moneyErr','');
+ if(raw===''||!Number.isFinite(n)||n<0){err('moneyErr','Enter a valid non-negative amount.');return}
+ document.getElementById('moneyOut').textContent=((n*rates[f])/rates[t]).toFixed(2)+' '+t;
+});
+document.getElementById('swap').addEventListener('click',()=>{
+ const f=document.getElementById('from'),t=document.getElementById('to'),old=f.value;f.value=t.value;t.value=old;
+});
+</script>
+</body>
+</html>
